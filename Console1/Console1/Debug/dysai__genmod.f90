@@ -1,0 +1,7 @@
+        !COMPILER-GENERATED INTERFACE MODULE: Wed Dec 26 21:33:08 2018
+        MODULE DYSAI__genmod
+          INTERFACE 
+            SUBROUTINE DYSAI
+            END SUBROUTINE DYSAI
+          END INTERFACE 
+        END MODULE DYSAI__genmod
