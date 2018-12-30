@@ -25,7 +25,7 @@ program geometry
     h=sqrt(1.4*(m/rho_0))
     
     
-110 format (4f10.0,1i4,1i1)
+
         allocate(x(2,N))
         i=1
         do yi=1,sqn
@@ -35,7 +35,15 @@ program geometry
                 i=i+1
             enddo
         enddo
-        write (2,*) x
+        
+        do i=1,N
+            write (2,111) x(1,i),x(2,i)
+        enddo
+        
         deallocate(x)
         pause
+        
+110 format (4f10.0,1i4,1i1)
+111 format (2f)
+    
 end program geometry               
