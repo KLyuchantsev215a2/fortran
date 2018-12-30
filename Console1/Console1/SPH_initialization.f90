@@ -1,15 +1,41 @@
 !данный скрипт создает подготовленный файл с вхводными данными для метода
 !полная инициализация начальный данных, работа с геометрией области
+program geometry
+!d размерность задачи нигде пока не используется
+    implicit none 
+    integer N,sqn,d
+    integer i,yi,xi
+    real rho_0, v_0, T, l
+    real S,m,h
+    real nu,mu 
+    real dh
+    real, allocatable :: x(:,:)
     
-1000 format (2f10.0)
-real rho !плотность материала
-real v_0 !скорость верхней грани квадрата
-    read (iin,1000) hed,numnp,(idof(i),i=1,6),negl,negnl,imass,idamp,
-     1                modex,nste,dt,tstart,ieig,ipri,nskew
-    open(1,FILE='input.txt')
-    read(1,*) rho
-    write(*,*) rho
-    read(1,*) v_0
-    write(*,*) v_0
-    pause
-end
+    open (unit=1, file="input.txt", status='old',    &
+             access='sequential', form='formatted', action='read' )
+    open (unit=2, file="output.txt")
+    
+    read (1, 110) rho_0, v_0, T, l, sqn, d 
+    write (*, 110) rho_0, v_0, T, l, sqn, d
+
+    
+    N=sqn*sqn
+    S=l*l
+    m=rho_0*S/N
+    h=sqrt(1.4*(m/rho_0))
+    
+    
+110 format (4f10.0,1i4,1i1)
+        allocate(x(2,N))
+        i=1
+        do yi=1,sqn
+            do xi=1,sqn
+                x(1,i) = real(xi)/real(sqn)*l
+                x(2,i) = real(yi)/real(sqn)*l
+                i=i+1
+            enddo
+        enddo
+        write (2,*) x
+        deallocate(x)
+        pause
+end program geometry               

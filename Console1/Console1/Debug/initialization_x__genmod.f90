@@ -1,0 +1,11 @@
+        !COMPILER-GENERATED INTERFACE MODULE: Mon Dec 31 01:15:50 2018
+        MODULE INITIALIZATION_X__genmod
+          INTERFACE 
+            FUNCTION INITIALIZATION_X(N,SQN,L)
+              INTEGER(KIND=4) :: N
+              REAL(KIND=4) :: SQN
+              INTEGER(KIND=4) :: L
+              INTEGER(KIND=4) :: INITIALIZATION_X
+            END FUNCTION INITIALIZATION_X
+          END INTERFACE 
+        END MODULE INITIALIZATION_X__genmod
