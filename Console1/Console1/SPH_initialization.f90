@@ -2,7 +2,7 @@
 !полная инициализация начальный данных, работа с геометрией области
 program geometry
 !d размерность задачи нигде пока не используется
-    implicit none 
+ 
     integer N,sqn,d
     integer i,yi,xi
     real rho_0, v_0, T, l
@@ -31,8 +31,8 @@ program geometry
         i=1
         do yi=1,sqn
             do xi=1,sqn
-                x(1,i) = real(xi)/real(sqn)*l
-                x(2,i) = real(yi)/real(sqn)*l
+                x(1,i) = real(xi-1)/real(sqn-1)*l
+                x(2,i) = real(yi-1)/real(sqn-1)*l
                 i=i+1
             enddo
         enddo
@@ -45,7 +45,7 @@ program geometry
         
         allocate(v(2,N))
         do i=1,N
-            v(1,i)=x(2,i)*v_0-x(2,1)*v_0
+            v(1,i)=x(2,i)*v_0
             v(2,i)=0
         enddo
         

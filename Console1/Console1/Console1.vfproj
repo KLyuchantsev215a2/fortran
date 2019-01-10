@@ -31,6 +31,5 @@
 		<File RelativePath=".\input_sph.txt"/>
 		<File RelativePath=".\output.txt"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-		<File RelativePath=".\SPH.f90"/>
 		<File RelativePath=".\SPH_initialization.f90"/></Filter></Files>
 	<Globals/></VisualStudioProject>
