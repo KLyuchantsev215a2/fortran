@@ -57,24 +57,24 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="150.txt")
+    open (unit=1, file="600.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="Force_old_SPH.txt", action='write')
     
     read (1, 1100) rho_0, T,nu, mu,k,gammar,betar,gammas,betas,eta,pi, dh,N  
     write (*, 1100) rho_0, T,nu, mu,k,gammar,betar,gammas,betas,eta,pi, dh,N
-    YieldStress=335.0d0
+    
     gammas=-gammas
     pi=3.14159265359
-    
+    Area=1.52d0
     coutfr=1
     per=0.000005d0
-    Area=1.5d0
     m=rho_0*Area/N  
     vol=m/rho_0
-    h=1.0*sqrt(m/rho_0)
+    h=1.1*sqrt(m/rho_0)
+    
     dt=1.0d-6
-    disp=0.05d0
+    disp=0.25d0
     damp_thick=1.0d0
     fr=int(T/dt/50)
     
@@ -89,7 +89,7 @@ integer, allocatable :: index_hole(:)
     allocate(s(N))
     allocate(s_new(N))
     allocate(YieldStress(N))
-    
+    YieldStress=335.0d0
     allocate(cor_W(N,N))
     allocate(Wper1(N,N))
     allocate(nabla_W_0_1(N,N))
@@ -107,10 +107,10 @@ integer, allocatable :: index_hole(:)
     count_section=0
      do i=1,N
         if(x(2,i)>=1.0d0) then
-            YieldStress=335.0d0
+            YieldStress(i)=435.0d0
         end if
         if (x(2,i)<=0.5d0) then
-            YieldStress=335.0d0
+            YieldStress(i)=435.0d0
         end if  
     enddo
     
@@ -184,28 +184,28 @@ do step=1,int(T/dt)
     
     time_calculated=(real(step-1)*dt)
     
-    if((time_calculated>=0.1d0)*(flag1==0.0d0)) then
-         flag1=1.0d0
-         flag=0.0d0
-         x_init=x
-         acc=0
-         v=0
+  !  if((time_calculated>=0.1d0)*(flag1==0.0d0)) then
+  !      flag1=1.0d0
+  !       flag=0.0d0
+   !      x_init=x
+   !      acc=0
+    !     v=0
          
-         call Create_Table(x,h,table,N,dh) 
+     !    call Create_Table(x,h,table,N,dh) 
     
-         call Compute_W_cor(x,x,h,N,vol,cor_W,table)
-         call Compute_nabla_W(x,h,vol,N,Wper1,nabla_W_0_1,nabla_W_0_2,dh,table)!tmp
-         call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
-            s=0.0d0
-            Ci=0.0d0
-            Ci(1,1,1:N)=1
-            Ci(2,2,1:N)=1
-            Ci(3,3,1:N)=1
+      !   call Compute_W_cor(x,x,h,N,vol,cor_W,table)
+      !   call Compute_nabla_W(x,h,vol,N,Wper1,nabla_W_0_1,nabla_W_0_2,dh,table)!tmp
+      !   call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
+       !     s=0.0d0
+      !      Ci=0.0d0
+       !     Ci(1,1,1:N)=1
+      !      Ci(2,2,1:N)=1
+      !      Ci(3,3,1:N)=1
             
-        call OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu,k,eta,dt,YieldStress,gammar,betar,gammas,betas,N,flag)  
-    end if
+       ! call OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu,k,eta,dt,YieldStress,gammar,betar,gammas,betas,N,flag)  
+   ! end if
    
-    flag=1
+    !flag=1
     do k2=1,count_hole
         x(2,index_hole(k2))=x_init(2,index_hole(k2))+disp*(1-cos(pi*time_calculated))
       !  x(1,index_hole(k2))=x_init(1,index_hole(k2))
@@ -255,7 +255,7 @@ do step=1,int(T/dt)
         
         write (2,1112)  Force,x(2,index_hole(1))-x_init(2,index_hole(1))
         !write (3,1112) Force_old,time_calculated
-        write (*,1112) maxPK133,x(2,index_hole(1))-x_init(2,index_hole(1))
+        write (*,1112) x(1,1),x(2,1)
         xplot(1:2,1:N,coutfr)=x
         coutfr=coutfr+1
     end if
