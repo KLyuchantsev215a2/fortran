@@ -1,10 +1,11 @@
 subroutine Compute_Newton_Fluid(F,etaN,CN,CN_new,PK1N,N,dt)
+    use matrix
     !input C-previous C
     !C_new current C
     !F
     !output PK1 Newton
      integer :: N
-     real*8 :: F(2,2,N)
+     real*8 :: F(3,3,N)
      real*8 ::invFp(3,3)
      real*8 :: etaN
      real*8 :: CN(3,3,N)
@@ -25,16 +26,15 @@ subroutine Compute_Newton_Fluid(F,etaN,CN,CN_new,PK1N,N,dt)
      real*8 :: XN(3,3)
     
      real*8 ::multXNC(3,3)
-     real*8 :: trace
+
     
      do i=1,N
          Fp=0
-         Cpp(1:3,1:3)=C(1:3,1:3,i)   ! C from the previous time step
-         Fp(1:2,1:2)=F(1:2,1:2,i)    ! current F 
+         Cpp(1:3,1:3)=CN(1:3,1:3,i)   ! C from the previous time step
+         Fp(1:3,1:3)=F(1:3,1:3,i)    ! current F 
          
          call inv_matrix(Cpp,invC)   !inv nC
          
-         Fp(3,3)=1
         
          call inv_matrix(Fp,invFp)
          

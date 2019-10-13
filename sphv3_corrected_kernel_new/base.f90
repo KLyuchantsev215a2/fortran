@@ -60,7 +60,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="2400.txt")
+    open (unit=1, file="600.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="Force_old_SPH.txt", action='write')
     
@@ -74,8 +74,8 @@ integer, allocatable :: index_hole(:)
     per=0.000005d0
     m=rho_0*Area/N  
     vol=m/rho_0
-    h=0.6*sqrt(m/rho_0)
-    etaN-0.25
+    h=1.4*sqrt(m/rho_0)
+    etaN=-0.001d0
     dt=1.0d-6
     disp=0.02d0
     damp_thick=1.0d0
@@ -174,6 +174,10 @@ integer, allocatable :: index_hole(:)
    Ci(1,1,1:N)=1
    Ci(2,2,1:N)=1
    Ci(3,3,1:N)=1
+   CN=0.0d0
+   CN(1,1,1:N)=1
+   CN(2,2,1:N)=1
+   CN(3,3,1:N)=1
    flag=0.0d0
    call OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu,k,eta,dt,YieldStress,gammar,betar,gammas,betas,N,flag)  
    !Ci(1:3,1:3,1:N)=Ci_new(1:3,1:3,1:N)
@@ -245,7 +249,7 @@ do step=1,int(T/dt)
   !  enddo
      
     !вычисление ускорения
-    call Compute_Acceleration(x,Ci,CN,CN_new,s,acc,PK1,F,Fedge,Cauchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N)
+    call Compute_Acceleration(x,Ci,CN,CN_new,s,acc,PK1,PK1N,F,Fedge,Cauchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N)
     
     !запоминание фрейма
      if(step-int(step/fr)*fr==0) then

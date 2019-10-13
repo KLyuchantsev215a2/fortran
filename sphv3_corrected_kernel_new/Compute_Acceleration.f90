@@ -1,17 +1,17 @@
-subroutine Compute_Acceleration(x,Ci,s,acc,PK1,PK1N,F,Fedge,Couchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N) 
+subroutine Compute_Acceleration(x,Ci,CN,CN_new,s,acc,PK1,PK1N,F,Fedge,Couchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N) 
   IMPLICIT NONE
     integer :: N,i,j,alpha,flag
     real*8 :: dt
     real*8 :: mu
     real*8 :: k
     real*8 :: eta
+    real*8 :: etaN
     real*8 :: YieldStress(N)
     real*8 :: vol
     real*8 :: betar
     real*8 :: gammar
     real*8 :: betas
     real*8 :: gammas
-    real*8 :: etaN
     real*8 :: rho_0
     real*8 :: s(N)
     real*8 :: Fedge(2)!edge Force=reaction force

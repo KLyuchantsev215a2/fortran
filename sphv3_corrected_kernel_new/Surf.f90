@@ -12,7 +12,7 @@ subroutine surf(s,Nn)
 
         ! create the xyz data
         
-        call meshgrid(x, y, linspace(-0.1_wp,1.2_wp, 40), linspace(-0.03_wp,1.53_wp, 60)  )
+        call meshgrid(x, y, linspace(-0.1_wp,1.2_wp, 20), linspace(-0.03_wp,1.53_wp, 30)  )
 
         n=size(x,1)
         m=size(x,2)
@@ -22,9 +22,9 @@ subroutine surf(s,Nn)
          !z(1:20,2)=s(21:40)
          !z(1:20,3)=s(41:60)
          !z(1:20,4)=s(61:81)
-         do j=1,40
-         do i=1,60
-             l=1+40*(i-1)
+         do j=1,20
+         do i=1,30
+             l=1+20*(i-1)
            !  k=20*(i-1)+20
              z(i,j)=s(l+j-1)
          enddo

@@ -1,15 +1,19 @@
-        !COMPILER-GENERATED INTERFACE MODULE: Sun Sep 29 21:35:36 2019
+        !COMPILER-GENERATED INTERFACE MODULE: Sun Oct 13 23:29:15 2019
         MODULE COMPUTE_ACCELERATION__genmod
           INTERFACE 
-            SUBROUTINE COMPUTE_ACCELERATION(X,CI,S,ACC,PK1,F,FEDGE,     &
-     &COUCHY,THICHNESS,TABLE,X_INIT,COR_W,NABLA_W_0_1,NABLA_W_0_2,MU,K, &
-     &ETA,VOL,YIELDSTRESS,BETAR,GAMMAR,BETAS,GAMMAS,RHO_0,DT,N)
+            SUBROUTINE COMPUTE_ACCELERATION(X,CI,CN,CN_NEW,S,ACC,PK1,   &
+     &PK1N,F,FEDGE,COUCHY,THICHNESS,TABLE,X_INIT,COR_W,NABLA_W_0_1,     &
+     &NABLA_W_0_2,MU,K,ETA,ETAN,VOL,YIELDSTRESS,BETAR,GAMMAR,BETAS,     &
+     &GAMMAS,RHO_0,DT,N)
               INTEGER(KIND=4) :: N
               REAL(KIND=8) :: X(2,N)
               REAL(KIND=8) :: CI(3,3,N)
+              REAL(KIND=8) :: CN(3,3,N)
+              REAL(KIND=8) :: CN_NEW(3,3,N)
               REAL(KIND=8) :: S(N)
               REAL(KIND=8) :: ACC(2,N)
               REAL(KIND=8) :: PK1(3,3,N)
+              REAL(KIND=8) :: PK1N(3,3,N)
               REAL(KIND=8) :: F(3,3,N)
               REAL(KIND=8) :: FEDGE(2)
               REAL(KIND=8) :: COUCHY(3,3,N)
@@ -22,6 +26,7 @@
               REAL(KIND=8) :: MU
               REAL(KIND=8) :: K
               REAL(KIND=8) :: ETA
+              REAL(KIND=8) :: ETAN
               REAL(KIND=8) :: VOL
               REAL(KIND=8) :: YIELDSTRESS(N)
               REAL(KIND=8) :: BETAR
