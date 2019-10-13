@@ -1,4 +1,4 @@
-subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Couchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N) 
+subroutine Compute_Acceleration(x,Ci,s,acc,PK1,PK1N,F,Fedge,Couchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N) 
   IMPLICIT NONE
     integer :: N,i,j,alpha,flag
     real*8 :: dt
@@ -11,15 +11,19 @@ subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Couchy,thichness,table,x_
     real*8 :: gammar
     real*8 :: betas
     real*8 :: gammas
+    real*8 :: etaN
     real*8 :: rho_0
     real*8 :: s(N)
     real*8 :: Fedge(2)!edge Force=reaction force
     real*8 :: s_new(N)
     real*8 :: F(3,3,N)
     real*8 :: Ci(3,3,N)
+    real*8 :: CN(3,3,N)
+    real*8 :: CN_New(3,3,N)
     real*8 :: thichness(N)
     real*8 :: Couchy(3,3,N)
     real*8 :: PK1(3,3,N)
+    real*8 :: PK1N(3,3,N)
     real*8 :: x(2,N)
     real*8 :: x_init(2,N)
     real*8 :: cor_W(N)
@@ -30,15 +34,15 @@ subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Couchy,thichness,table,x_
     flag=1
     call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
     call  OneStepPlasticity(F,s,Ci,thichness,Couchy,PK1,mu,k,eta,dt,YieldStress,gammar,betar,gammas,betas,N,flag)   
-    
+    call  Compute_Newton_Fluid(F,etaN,CN,CN_new,PK1N,N,dt)
     Fedge=0.0d0
     acc=0.0d0
     
     do i=1,N
         do j=1,table(i,1)
                 do alpha=1,2  
-                    acc(alpha,i)=acc(alpha,i)-vol*PK1(alpha,1,table(i,j+1))*nabla_W_0_1(table(i,j+1),i)
-                    acc(alpha,i)=acc(alpha,i)-vol*PK1(alpha,2,table(i,j+1))*nabla_W_0_2(table(i,j+1),i)
+                    acc(alpha,i)=acc(alpha,i)-vol*(PK1(alpha,1,table(i,j+1))+PK1N(alpha,1,table(i,j+1)))*nabla_W_0_1(table(i,j+1),i)
+                    acc(alpha,i)=acc(alpha,i)-vol*(PK1(alpha,2,table(i,j+1))+PK1N(alpha,2,table(i,j+1)))*nabla_W_0_2(table(i,j+1),i)
                 enddo
         enddo
         

@@ -38,10 +38,13 @@ real*8, allocatable :: nabla_W_0_2(:,:)
 real*8, allocatable :: Cauchy(:,:,:)
 real*8, allocatable :: Cauchy_per(:,:,:)
 real*8, allocatable :: PK1(:,:,:)
+real*8, allocatable :: PK1N(:,:,:)
 real*8, allocatable :: PK1_per(:,:,:)
 real*8, allocatable :: F(:,:,:)
 real*8, allocatable :: Ci(:,:,:)
 real*8, allocatable :: Ci_new(:,:,:)
+real*8, allocatable :: CN(:,:,:)
+real*8, allocatable :: CN_new(:,:,:)
     
 real*8, allocatable :: U(:)
 real*8:: disp
@@ -57,7 +60,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="600.txt")
+    open (unit=1, file="2400.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="Force_old_SPH.txt", action='write')
     
@@ -66,15 +69,15 @@ integer, allocatable :: index_hole(:)
     
     gammas=-gammas
     pi=3.14159265359
-    Area=1.52d0
+    Area=1.5d0
     coutfr=1
     per=0.000005d0
     m=rho_0*Area/N  
     vol=m/rho_0
-    h=1.1*sqrt(m/rho_0)
-    
+    h=0.6*sqrt(m/rho_0)
+    etaN-0.25
     dt=1.0d-6
-    disp=0.25d0
+    disp=0.02d0
     damp_thick=1.0d0
     fr=int(T/dt/50)
     
@@ -107,10 +110,10 @@ integer, allocatable :: index_hole(:)
     count_section=0
      do i=1,N
         if(x(2,i)>=1.0d0) then
-            YieldStress(i)=435.0d0
+            YieldStress(i)=805.0d0
         end if
         if (x(2,i)<=0.5d0) then
-            YieldStress(i)=435.0d0
+            YieldStress(i)=805.0d0
         end if  
     enddo
     
@@ -145,7 +148,7 @@ integer, allocatable :: index_hole(:)
     call Compute_W_cor(x,x,h,N,vol,cor_W,table)
     call Compute_nabla_W(x,h,vol,N,Wper1,nabla_W_0_1,nabla_W_0_2,dh,table)!tmp
    
-    
+   
    
     allocate(F(3,3,N))
     allocate(thichness(N))
@@ -153,14 +156,20 @@ integer, allocatable :: index_hole(:)
     allocate(deriv(N))
     allocate(Ci(3,3,N))
     allocate(Ci_new(3,3,N))
+    allocate(CN(3,3,N))
+    allocate(CN_new(3,3,N))
     allocate(Cauchy(3,3,N))
     allocate(Cauchy_per(3,3,N))
     allocate(PK1(3,3,N))
+    allocate(PK1N(3,3,N))
     allocate(PK1_per(3,3,N))
     allocate(U(N))
    
    call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
    s=0.0d0
+   
+   
+   
    Ci=0.0d0
    Ci(1,1,1:N)=1
    Ci(2,2,1:N)=1
@@ -174,6 +183,7 @@ integer, allocatable :: index_hole(:)
    flag1=0.0d0
    !конец блок инициализации начальных данных
    call plot_init(x,N,count_hole,count_section,index_section,index_hole)
+   call surf(s,N)
 !начало блок интегрирования по времени
 do step=1,int(T/dt)
     
@@ -208,12 +218,12 @@ do step=1,int(T/dt)
     !flag=1
     do k2=1,count_hole
         x(2,index_hole(k2))=x_init(2,index_hole(k2))+disp*(1-cos(pi*time_calculated))
-      !  x(1,index_hole(k2))=x_init(1,index_hole(k2))
+   x(1,index_hole(k2))=x_init(1,index_hole(k2))
     enddo  
         
     do k1=1,count_section
         x(2,index_section(k1))=x_init(2,index_section(k1))-disp*(1-cos(pi*time_calculated))
-       ! x(1,index_section(k1))=x_init(1,index_section(k1))
+        x(1,index_section(k1))=x_init(1,index_section(k1))
     enddo
     
   
@@ -235,7 +245,7 @@ do step=1,int(T/dt)
   !  enddo
      
     !вычисление ускорения
-    call Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N)
+    call Compute_Acceleration(x,Ci,CN,CN_new,s,acc,PK1,F,Fedge,Cauchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N)
     
     !запоминание фрейма
      if(step-int(step/fr)*fr==0) then
@@ -273,8 +283,7 @@ do step=1,int(T/dt)
 enddo
 
 !конец блок интегрирования по времени 
-  
-    
+    call surf(s,N)
     pause
     
     !гиф анимация процесса

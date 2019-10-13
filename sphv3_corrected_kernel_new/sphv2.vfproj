@@ -59,6 +59,7 @@
 		<File RelativePath=".\Compute_F.f90"/>
 		<File RelativePath=".\Compute_Force.f90"/>
 		<File RelativePath=".\Compute_nabla_W.f90"/>
+		<File RelativePath=".\Compute_Newton_Fluid.f90"/>
 		<File RelativePath=".\Compute_OneStepPlasticity.f90"/>
 		<File RelativePath=".\Compute_Potential.f90"/>
 		<File RelativePath=".\Compute_W_cor.f90"/>
@@ -67,5 +68,6 @@
 		<File RelativePath=".\Matrix.f90"/>
 		<File RelativePath="C:\Users\mmfhanter\Documents\Visual Studio 2012\Projects\balk\balk\ogpf.f90"/>
 		<File RelativePath="C:\Users\mmfhanter\Documents\Visual Studio 2012\Projects\balk\balk\plot.f90"/>
-		<File RelativePath="C:\Users\mmfhanter\Documents\Visual Studio 2012\Projects\balk\balk\plot_init.f90"/></Filter></Files>
+		<File RelativePath="C:\Users\mmfhanter\Documents\Visual Studio 2012\Projects\balk\balk\plot_init.f90"/>
+		<File RelativePath=".\Surf.f90"/></Filter></Files>
 	<Globals/></VisualStudioProject>
