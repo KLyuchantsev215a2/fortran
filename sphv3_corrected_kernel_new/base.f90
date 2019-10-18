@@ -18,6 +18,7 @@ real*8 :: Force,Force_old,Fedge(2)!Сила
 real*8 :: Kin,Poten,maxPK133,maxthichness,damp_thick!Energy 
     
 integer, allocatable :: table(:,:)!таблица связности
+integer, allocatable :: tableN(:,:)!таблица связности
 real*8, allocatable :: x(:,:)
 real*8, allocatable :: v(:,:)
 real*8, allocatable :: acc(:,:)
@@ -34,6 +35,12 @@ real*8, allocatable :: Wper1(:,:)
 real*8, allocatable :: Wper2(:,:)
 real*8, allocatable :: nabla_W_0_1(:,:)
 real*8, allocatable :: nabla_W_0_2(:,:)
+real*8, allocatable :: WN(:,:)
+real*8, allocatable :: cor_WN(:,:)
+real*8, allocatable :: Wper1N(:,:)
+real*8, allocatable :: Wper2N(:,:)
+real*8, allocatable :: nabla_W_0_1N(:,:)
+real*8, allocatable :: nabla_W_0_2N(:,:)
     
 real*8, allocatable :: Cauchy(:,:,:)
 real*8, allocatable :: Cauchy_per(:,:,:)
@@ -41,6 +48,7 @@ real*8, allocatable :: PK1(:,:,:)
 real*8, allocatable :: PK1N(:,:,:)
 real*8, allocatable :: PK1_per(:,:,:)
 real*8, allocatable :: F(:,:,:)
+real*8, allocatable :: FN(:,:,:)
 real*8, allocatable :: Ci(:,:,:)
 real*8, allocatable :: Ci_new(:,:,:)
 real*8, allocatable :: CN(:,:,:)
@@ -54,19 +62,21 @@ real*8, allocatable :: deriv(:)
 
 real*8:: vol
 real*8 :: h
+real*8:: hN
 
 integer, allocatable :: index_section(:)
 integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="600.txt")
+    open (unit=1, file="2400.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="Force_old_SPH.txt", action='write')
     
     read (1, 1100) rho_0, T,nu, mu,k,gammar,betar,gammas,betas,eta,pi, dh,N  
     write (*, 1100) rho_0, T,nu, mu,k,gammar,betar,gammas,betas,eta,pi, dh,N
-    
+   ! mu=0
+   ! k=0
     gammas=-gammas
     pi=3.14159265359
     Area=1.5d0
@@ -75,8 +85,9 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.4*sqrt(m/rho_0)
-    etaN=-0.001d0
-    dt=1.0d-6
+    hN=1.4*sqrt(m/rho_0)
+    etaN=0.001d0
+    dt=1.0d-5
     disp=0.02d0
     damp_thick=1.0d0
     fr=int(T/dt/50)
@@ -88,7 +99,8 @@ integer, allocatable :: index_hole(:)
     allocate(xplot(2,N,200))
 
     allocate(table(N,120))
-
+     allocate(tableN(N,120))
+     
     allocate(s(N))
     allocate(s_new(N))
     allocate(YieldStress(N))
@@ -97,6 +109,10 @@ integer, allocatable :: index_hole(:)
     allocate(Wper1(N,N))
     allocate(nabla_W_0_1(N,N))
     allocate(nabla_W_0_2(N,N))
+    allocate(cor_WN(N,N))
+    allocate(Wper1N(N,N))
+    allocate(nabla_W_0_1N(N,N))
+    allocate(nabla_W_0_2N(N,N))
     
     !начало блок инициализации начальных данных
     do i=1,N
@@ -104,6 +120,7 @@ integer, allocatable :: index_hole(:)
     enddo
    
     call Create_Table(x,h,table,N,dh) 
+    call Create_Table(x,hN,tableN,N,dh) 
     
     !начало блок краевых условий
     count_hole=0
@@ -145,12 +162,15 @@ integer, allocatable :: index_hole(:)
     
     x_init=x
     v=0
-    call Compute_W_cor(x,x,h,N,vol,cor_W,table)
+    call Compute_W_cor(x,x,hN,N,vol,cor_WN,tableN)
+    call Compute_nabla_W(x,hN,vol,N,Wper1N,nabla_W_0_1N,nabla_W_0_2N,dh,tableN)!tmp
+    
+      call Compute_W_cor(x,x,h,N,vol,cor_W,table)
     call Compute_nabla_W(x,h,vol,N,Wper1,nabla_W_0_1,nabla_W_0_2,dh,table)!tmp
    
    
-   
     allocate(F(3,3,N))
+    allocate(FN(3,3,N))
     allocate(thichness(N))
     thichness=1.0d0
     allocate(deriv(N))
@@ -166,6 +186,7 @@ integer, allocatable :: index_hole(:)
     allocate(U(N))
    
    call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
+   call Compute_F(x,x_init,thichness,FN,vol,cor_WN,nabla_W_0_1N,nabla_W_0_2N,N,tableN)
    s=0.0d0
    
    
@@ -248,8 +269,12 @@ do step=1,int(T/dt)
    !    thichness(i)=thichness(i)-Cauchy(3,3,i)*damp_thick*dt
   !  enddo
      
+    
+    
     !вычисление ускорения
-    call Compute_Acceleration(x,Ci,CN,CN_new,s,acc,PK1,PK1N,F,Fedge,Cauchy,thichness,table,x_init,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N)
+    call Compute_Acceleration(x,Ci,CN,CN_new,s,acc,PK1,PK1N,F,Fedge,Cauchy,x_init,thichness,tableN,cor_WN,nabla_W_0_1N,nabla_W_0_2N,table,cor_W,nabla_W_0_1,nabla_W_0_2,mu,k,eta,etaN,vol,YieldStress,betar,gammar,betas,gammas,rho_0,dt,N) 
+    
+  !  CN=CN_new
     
     !запоминание фрейма
      if(step-int(step/fr)*fr==0) then
@@ -269,7 +294,7 @@ do step=1,int(T/dt)
         
         write (2,1112)  Force,x(2,index_hole(1))-x_init(2,index_hole(1))
         !write (3,1112) Force_old,time_calculated
-        write (*,1112) x(1,1),x(2,1)
+        write (*,1112) Force,x(2,1)
         xplot(1:2,1:N,coutfr)=x
         coutfr=coutfr+1
     end if

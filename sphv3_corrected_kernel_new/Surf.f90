@@ -37,7 +37,7 @@ subroutine surf(s,Nn)
 
         !plot the contour
         call gp%title('Example 105: Contour plot')
-        call gp%options('unset border; unset tics')
+        call gp%options('unset border')
         call gp%surf(x,y,z, palette='accent')
         call gp%contour(x,y,z, palette='jet')
 
