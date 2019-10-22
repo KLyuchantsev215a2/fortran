@@ -66,7 +66,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="600.txt")
+    open (unit=1, file="2400.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="Force_old_SPH.txt", action='write')
     
