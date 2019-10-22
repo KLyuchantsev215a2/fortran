@@ -115,10 +115,10 @@ do i=1,N
         phi(i)=phi_g(i)+ phi_n(i)
         phi_g(i)=phi_g(i)+li*dgrowth*phi(i)*dt*exp(sqrt(3.0/2.0)*(MandellStress(1,1)+MandellStress(2,2)+MandellStress(3,3))/DrivingForce)*phi(i)
         phi_n(i)=phi_g(i)+dt*A_phi*li
-        mu(i)=mu0*exp(-SRR*(phi(i)-1.0d0))
-        k(i)=k0*exp(-BRR*(phi(i)-1))
-        YieldStress(i)=YieldStress0(i)*exp(-IRR*(phi(i)-1.0d0))
-        gammar(i)=gammar0*exp(-IRR*(phi(i)-1.0d0))
+        mu(i)=mu0*exp(-SRR*(phi(i)))
+       k(i)=k0*exp(-BRR*(phi(i)))
+        YieldStress(i)=YieldStress0(i)*exp(-IRR*(phi(i)))
+        gammar(i)=gammar0*exp(-IRR*(phi(i)))
         end if
     end if
 
