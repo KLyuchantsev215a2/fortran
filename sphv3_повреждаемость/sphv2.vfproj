@@ -61,6 +61,7 @@
 		<File RelativePath=".\Compute_nabla_W.f90"/>
 		<File RelativePath=".\Compute_OneStepPlasticity.f90"/>
 		<File RelativePath=".\Compute_Potential.f90"/>
+		<File RelativePath=".\Compute_W.f90"/>
 		<File RelativePath=".\Compute_W_cor.f90"/>
 		<File RelativePath=".\Create_Table.f90"/>
 		<File RelativePath=".\Kernel.f90"/>

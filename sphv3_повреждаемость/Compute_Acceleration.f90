@@ -1,4 +1,4 @@
-subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,table,cor_W,nabla_W_0_1,nabla_W_0_2,mu0,k0,eta,mu,k,gammar,phi_n,phi_g,etaN,vol,YieldStress,YieldStress0,betar,gammar0,rho_0,dt,N) 
+subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,table,cor_W,cor_W1,nabla_W_0_1,nabla_W_0_2,mu0,k0,eta,mu,k,gammar,phi,etaN,vol,YieldStress,YieldStress0,betar,gammar0,rho_0,dt,N) 
   !input: 
   !     x     position vector
   !     Ci,s  internal varaibles of viscoplastic model
@@ -19,8 +19,7 @@ subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,t
     real*8 :: YieldStress0(N)
     real*8 :: mu(N)
     real*8 :: k(N)
-    real*8 :: phi_n(N)
-    real*8 :: phi_g(N)
+    real*8 :: phi(N)
     real*8 :: gammar(N)
     real*8 :: vol
     real*8 :: betar
@@ -39,7 +38,8 @@ subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,t
     real*8 :: PK1(3,3,N)
     real*8 :: x(2,N)
     real*8 :: x_init(2,N)
-    real*8 :: cor_W(N)
+    real*8 :: cor_W(N,N)
+    real*8 :: cor_W1(N,N)
     real*8 :: nabla_W_0_1(N,N)
     real*8 :: nabla_W_0_2(N,N)
     real*8 :: acc(2,N)
@@ -49,7 +49,7 @@ subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,t
     call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
     
     
-    call  OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu0,k0,eta,mu,k,gammar,phi_n,phi_g,dt,YieldStress,YieldStress0,gammar0,betar,N,flag)   
+    call  OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu0,k0,eta,mu,k,gammar,phi,dt,YieldStress,YieldStress0,gammar0,betar,N,flag,table,cor_W1)   
     
     Fedge=0.0d0
     acc=0.0d0

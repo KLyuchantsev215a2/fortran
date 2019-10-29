@@ -1,4 +1,4 @@
-subroutine OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu0,k0,eta,mu,k,gammar,phi_n,phi_g,dt,YieldStress,YieldStress0,gammar0,betar,N,flag) 
+subroutine OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu0,k0,eta,mu,k,gammar,phi,dt,YieldStress,YieldStress0,gammar0,betar,N,flag,table,cor_W1) 
 !input F,Ci, s              
 !output PK1
 USE matrix
@@ -11,13 +11,13 @@ real*8 :: s(N)
 real*8 :: thichness(N)
 real*8 :: mu0
 real*8 :: k0
-real*8 :: phi_n(N)
-real*8 :: phi_g(N)
 real*8 :: phi(N)
 real*8 :: dt
 real*8 :: li
-
+real*8 :: cor_W1(N,N)
+integer :: table(N,120)
 real*8 :: eta
+real*8:: etalocal
 real*8 :: YieldStress(N)
 real*8 :: YieldStress0(N)
 real*8 :: mu(N)
@@ -56,15 +56,14 @@ real*8 :: Stress2PK(3,3)
 real*8:: devmultCCi(3,3)
 real*8:: Kirchhoff(3,3)
 real*8:: Kirchhoff1(3,3)
-    BRR=50.0d0
-    SRR=50.0d0
-    IRR=40.0d0
-    A_phi=0.05d0
+    BRR=70.0d0
+    SRR=70.0d0
+    IRR=60.0d0
+    A_phi=0.1d0
     dgrowth =5.0d0
 
 Couchy=0.0d0
 PK1=0.0d0
-    
 do i=1,N
     Ci3x3=0.0d0
     Cp=0.0d0
@@ -95,7 +94,8 @@ do i=1,N
        
     DrivingForce=sqrt((DrivingForce_tmp_sqr(1,1)+DrivingForce_tmp_sqr(2,2)+DrivingForce_tmp_sqr(3,3)))                             ! DrivingForce = sqrt(trace(  (  dev(C T^tilde)  )^2  ))
     R=gammar(i)/betar*(1.0d0-exp(-betar*sp))  ! trial isotropic hardening
-    li=(DrivingForce-sqrt(2.0d0/3.0d0)*(YieldStress(i)+R))/eta
+    etalocal=eta*exp(-IRR*(phi(i)-1.0d0))
+    li=(DrivingForce-sqrt(2.0d0/3.0d0)*(YieldStress(i)+R))/etalocal
     if (li<0) then
         li=0
     end if                     ! Maccauley bracket
@@ -112,13 +112,16 @@ do i=1,N
         Ci3x3 = (detCi3x3**(-1.0d0/3.0d0))*Ci3x3   ! C_i for the current time step
         Ci(1:3,1:3,i) = Ci3x3(1:3,1:3) !update
         s(i) = sp+ sqrt(2.0d0/3.0d0)*li*dt!update
-        phi(i)=phi_g(i)+ phi_n(i)
-        phi_g(i)=phi_g(i)+li*dgrowth*phi(i)*dt*exp(sqrt(3.0/2.0)*(MandellStress(1,1)+MandellStress(2,2)+MandellStress(3,3))/DrivingForce)*phi(i)
-        phi_n(i)=phi_g(i)+dt*A_phi*li
-        mu(i)=mu0*exp(-SRR*(phi(i)))
-       k(i)=k0*exp(-BRR*(phi(i)))
-        YieldStress(i)=YieldStress0(i)*exp(-IRR*(phi(i)))
-        gammar(i)=gammar0*exp(-IRR*(phi(i)))
+        phi(i)=phi(i)+dt*li*(A_phi+(phi(i)-1.0d0)*dgrowth*exp(sqrt(3.0/2.0)*(MandellStress(1,1)+MandellStress(2,2)+MandellStress(3,3))/DrivingForce))
+        mu(i)=mu0*exp(-SRR*(phi(i)-1.0d0))
+        k(i)=k0*exp(-BRR*(phi(i)-1.0d0))
+        YieldStress(i)=YieldStress0(i)*exp(-IRR*(phi(i)-1.0d0))
+        gammar(i)=gammar0*exp(-IRR*(phi(i)-1))
+        
+         !do j=1,table(i,1)
+      !             s(i)=s(i)+vol*cor_W1(i,table(i,j+1))*s(table(i,j+1))
+       ! enddo
+         
         end if
     end if
 

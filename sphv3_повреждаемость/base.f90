@@ -28,14 +28,14 @@ real*8, allocatable :: YieldStress(:)
 real*8, allocatable :: YieldStress0(:)
 real*8, allocatable :: mu(:)
 real*8, allocatable :: k(:)
-real*8, allocatable :: phi_g(:)
-real*8, allocatable :: phi_n(:)
+real*8, allocatable :: phi(:)
 real*8, allocatable :: gammar(:)
 real*8, allocatable :: s(:)
 real*8, allocatable :: s_new(:)
 
 real*8, allocatable :: W(:,:)
 real*8, allocatable :: cor_W(:,:)
+real*8, allocatable :: cor_W1(:,:)
 real*8, allocatable :: Wper1(:,:)
 real*8, allocatable :: Wper2(:,:)
 real*8, allocatable :: nabla_W_0_1(:,:)
@@ -66,7 +66,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="2400.txt")
+    open (unit=1, file="600.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="Force_old_SPH.txt", action='write')
     
@@ -79,9 +79,9 @@ integer, allocatable :: index_hole(:)
     per=0.000005d0
     m=rho_0*Area/N  
     vol=m/rho_0
-    h=1.0*sqrt(m/rho_0)
-    dt=1.0d-6
-    disp=0.02d0
+    h=1.2*sqrt(m/rho_0)
+    dt=1.0d-5
+    disp=0.03d0
     damp_thick=1.0d0
     fr=int(T/dt/50)
     
@@ -96,14 +96,14 @@ integer, allocatable :: index_hole(:)
     allocate(s(N))
     allocate(mu(N))
     allocate(k(N))
-    allocate(phi_n(N))
-    allocate(phi_g(N))
+    allocate(phi(N))
     allocate(gammar(N))
     allocate(s_new(N))
     allocate(YieldStress0(N))
     allocate(YieldStress(N))
     YieldStress0=335.0d0
     allocate(cor_W(N,N))
+    allocate(cor_W1(N,N))
     allocate(Wper1(N,N))
     allocate(nabla_W_0_1(N,N))
     allocate(nabla_W_0_2(N,N))
@@ -160,6 +160,7 @@ integer, allocatable :: index_hole(:)
     v=0
 
     call Compute_W_cor(x,x,h,N,vol,cor_W,table)
+    call Compute_W1(x,x,h,N,vol,cor_W1,table)
     call Compute_nabla_W(x,h,vol,N,Wper1,nabla_W_0_1,nabla_W_0_2,dh,table)!tmp
    
    
@@ -179,15 +180,14 @@ integer, allocatable :: index_hole(:)
    s=0.0d0
    
    
-   phi_n=0
-   phi_g=0
+   phi=1.0d0
 
    Ci=0.0d0
    Ci(1,1,1:N)=1
    Ci(2,2,1:N)=1
    Ci(3,3,1:N)=1
    flag=0.0d0
-   call OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu0,k0,eta,mu,k,gammar,phi_n,phi_g,dt,YieldStress,YieldStress0,gammar0,betar,N,flag) 
+   call OneStepPlasticity(F,s,Ci,thichness,Cauchy,PK1,mu0,k0,eta,mu,k,gammar,phi,dt,YieldStress,YieldStress0,gammar0,betar,N,flag,table,cor_W1) 
    !Ci(1:3,1:3,1:N)=Ci_new(1:3,1:3,1:N)
    acc=0.0d0
    Force=0.0d0
@@ -259,7 +259,7 @@ do step=1,int(T/dt)
     
     
     !вычисление ускорения
-    call Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,table,cor_W,nabla_W_0_1,nabla_W_0_2,mu0,k0,eta,mu,k,gammar,phi_n,phi_g,etaN,vol,YieldStress,YieldStress0,betar,gammar0,rho_0,dt,N) 
+    call Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,table,cor_W,cor_W1,nabla_W_0_1,nabla_W_0_2,mu0,k0,eta,mu,k,gammar,phi,etaN,vol,YieldStress,YieldStress0,betar,gammar0,rho_0,dt,N) 
     
   !  CN=CN_new
     
