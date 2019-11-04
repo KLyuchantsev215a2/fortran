@@ -1,6 +1,6 @@
 subroutine Create_Table(x,h,table,N,dh)
     USE kernel
-    integer :: N,i,j
+    integer :: N,i,j,cout
     real*8 :: x(2,N)
     real*8:: h
     real*8:: dh

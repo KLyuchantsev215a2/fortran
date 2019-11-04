@@ -2,7 +2,6 @@ MODULE kernel
  
    IMPLICIT NONE
     CONTAINS
-    
     function Compute_W(xi,xj,hi,hj)
         real*8::xi(2)
         real*8::xj(2)
