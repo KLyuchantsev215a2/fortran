@@ -69,7 +69,7 @@ integer, allocatable :: index_hole(:)
         
     open (unit=1, file="2400.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
-    open (unit=3, file="Force_old_SPH.txt", action='write')
+    open (unit=3, file="arc.txt", action='write')
     
     read (1, 1100) rho_0, T,nu, mu0,k0,gammar0,betar,eta,pi, dh,N  
     write (*, 1100) rho_0, T,nu, mu0,k0,gammar0,betar,eta,pi, dh,N
@@ -81,9 +81,9 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.001*sqrt(m/rho_0)
-    dt=1.0d-6
-    disp=0.03d0
+    h_non_local=0.250d0
+    dt=1.0d-5
+    disp=0.04d0
     damp_thick=1.0d0
     fr=int(T/dt/500)
     
@@ -94,7 +94,7 @@ integer, allocatable :: index_hole(:)
     allocate(xplot(2,N,800))
 
     allocate(table(N,120))
-    allocate(table_non_local(N,120))
+    allocate(table_non_local(N,1800))
     allocate(s(N))
     allocate(mu(N))
     allocate(k(N))
@@ -282,7 +282,7 @@ do step=1,int(T/dt)
        call Compute_Force(x,x_init,F,thichness,U,cor_W,disp,Force,Ci,count_hole,count_section,vol,nabla_W_0_1,nabla_W_0_2,N,mu0,k0,table,index_hole,index_section,pi,time_calculated)
         
         write (2,1112)  Force,x(2,index_hole(1))-x_init(2,index_hole(1))
-        !write (3,1112) Force_old,time_calculated
+    
         write (*,1112) Force,x(2,1)
         xplot(1:2,1:N,coutfr)=x
         coutfr=coutfr+1
@@ -299,7 +299,9 @@ do step=1,int(T/dt)
    
     
 enddo
-
+    do i=1,60
+        write (3,1112) x_init(2,(i-1)*40+1),s((i-1)*40+1)
+    enddo
 !конец блок интегрирования по времени 
     call surf(s,N)
     pause

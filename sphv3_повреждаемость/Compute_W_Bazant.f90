@@ -13,7 +13,7 @@ subroutine Compute_W_Bazant(x,h,N,W,table)
        
 
         real*8 ::alpha,detcormat_tmp
-        integer :: table(N,120)
+        integer :: table(N,1800)
         
         ci=0 
         W=0

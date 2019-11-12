@@ -44,7 +44,7 @@ subroutine Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,t
     real*8 :: nabla_W_0_2(N,N)
     real*8 :: acc(2,N)
     integer :: table(N,120)
-    integer :: table_non_local(N,120)
+    integer :: table_non_local(N,1800)
     flag=1
     
     call Compute_F(x,x_init,thichness,F,vol,cor_W,nabla_W_0_1,nabla_W_0_2,N,table)
