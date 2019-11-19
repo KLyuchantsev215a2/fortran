@@ -1,0 +1,23 @@
+clear;   
+
+
+%MARC=load('C:\Users\mmfhanter\Desktop\FEM Results\ForceDispMarcSofteningCapsEta100_caps10000.txt');
+F600=load('C:\Users\mmfhanter\Documents\GitHub\fortran\sphv3_повреждаемость\non_local_result\h_0_2_5\arc_600.txt');
+F2400=load('C:\Users\mmfhanter\Documents\GitHub\fortran\sphv3_повреждаемость\non_local_result\h_0_2_5\arc_2400.txt');
+F9600=load('C:\Users\mmfhanter\Documents\GitHub\fortran\sphv3_повреждаемость\non_local_result\h_0_2_5\arc_9600.txt');
+h42=load('C:\Users\mmfhanter\Documents\GitHub\fortran\sphv3_повреждаемость\2h.txt');
+h52=load('C:\Users\mmfhanter\Documents\GitHub\fortran\sphv3_повреждаемость\4h.txt');
+h1=load('C:\Users\mmfhanter\Documents\GitHub\fortran\sphv3_повреждаемость\non_local_600\0_0_0_h_non.txt');
+%marc=load('C:\Users\mmfhanter\Desktop\ForceDispMarcSofteningCapsEta100_caps435.txt');
+%SPH2400=load('C:\Users\mmfhanter\Desktop\Плоские напряжения\2400.txt');
+%SPH9600=load('C:\Users\mmfhanter\Desktop\Плоские напряжения\9600.txt');
+%SPH=load('E:\Графики\sphv3\Force_SPH.txt');
+%SPH150=load('E:\05082019\600\Плоская деформация\пластичность\Force_SPH.txt');
+%SPH24000=load('E:\05082019\600\Плоская деформация\пластичность\Force_SPH.txt');
+%hPlot = plot(en9600v2(:,2),en9600v2(:,1),en2400v2(:,2),en2400v2(:,1),':',en600v2(:,2),en600v2(:,1),'--');
+
+%hPlot = plot(h1(:,2),h1(:,1)*1.02,':',h2(:,2),h2(:,1)*1.02,':',h3(:,2),h3(:,1)*1.02,':',h4(:,2),h4(:,1)*1.02,':',h5(:,2),h5(:,1)*1.02,':',h12(:,2),h12(:,1),h22(:,2),h22(:,1),h32(:,2),h32(:,1),h42(:,2),h42(:,1),h52(:,2),h52(:,1));
+hPlot = plot(F600(:,1),F600(:,2),F2400(:,1),F2400(:,2),F9600(:,1),F9600(:,2));
+
+set( hPlot, 'LineWidth', 2);
+set( gca,'xlim');

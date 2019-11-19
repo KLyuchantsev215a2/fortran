@@ -3,16 +3,16 @@ MODULE kernel
    IMPLICIT NONE
     CONTAINS
     function Compute_W(xi,xj,hi,hj)
-        real*8::xi(2)
-        real*8::xj(2)
-        real*8::hi
-        real*8::hj
-        real*8::Compute_W
-        real*8::r(2)
-        real*8::q
-        real*8::C
-        real*8::KERi
-        real*8::KERj
+       real*8::xi(2)
+       real*8::xj(2)
+       real*8::hi
+       real*8::hj
+       real*8::Compute_W
+       real*8::r(2)
+       real*8::q
+       real*8::C
+       real*8::KERi
+       real*8::KERj
         
         KERi=0.0d0
         KERj=0.0d0

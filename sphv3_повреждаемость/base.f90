@@ -81,7 +81,7 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.250d0
+    h_non_local=0.00001d0
     dt=1.0d-5
     disp=0.04d0
     damp_thick=1.0d0
@@ -201,8 +201,6 @@ integer, allocatable :: index_hole(:)
 !начало блок интегрирования по времени
 do step=1,int(T/dt)
     
-   
-    
     v=v+dt*acc
     x=x+dt*v
     
@@ -232,7 +230,7 @@ do step=1,int(T/dt)
     !flag=1
     do k2=1,count_hole
         x(2,index_hole(k2))=x_init(2,index_hole(k2))+disp*(1-cos(pi*time_calculated))
-   x(1,index_hole(k2))=x_init(1,index_hole(k2))
+        x(1,index_hole(k2))=x_init(1,index_hole(k2))
     enddo  
         
     do k1=1,count_section
@@ -299,8 +297,8 @@ do step=1,int(T/dt)
    
     
 enddo
-    do i=1,60
-        write (3,1112) x_init(2,(i-1)*40+1),s((i-1)*40+1)
+    do i=1,30
+        write (3,1112) x_init(2,(i-1)*20+1),s((i-1)*20+1)
     enddo
 !конец блок интегрирования по времени 
     call surf(s,N)
