@@ -54,6 +54,7 @@
 		<File RelativePath=".\3200.txt"/>
 		<File RelativePath=".\4800.txt"/>
 		<File RelativePath=".\600.txt"/>
+		<File RelativePath=".\876.txt"/>
 		<File RelativePath=".\9600.txt"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath=".\base.f90"/>

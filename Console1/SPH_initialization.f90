@@ -29,7 +29,7 @@
     By=((bias-1.0d0)*Ly)/(Ny*(Ny*bias-1.0d0-bias))
     Ay=(Ly-By*Ny*Ny)/Ny
     
-    Nreal=60*40
+    Nreal=42*21
 
         allocate(x(2,Nreal))
         
@@ -78,12 +78,12 @@
      !   enddo
         
         i=1
-        do yi=1,60
-            do xi=1,40
+        do yi=1,42
+            do xi=1,21
                 flag=1
       
-                x(1,i) = real(xi-1)/real(40-1)*1.0d0
-                x(2,i) = real(yi-1)/real(60-1)*1.5d0
+                x(1,i) = real(xi-1)/real(21-1)*1.0d0
+                x(2,i) = real(yi-1)/real(42-1)*2.0d0
                 i=i+1
       
             enddo
@@ -110,7 +110,7 @@
         
        do i=1,Nreal
            flag=1
-        if ((x(2,i)>=0.65d0+0.5*x(1,i))*(x(2,i)<=0.75d0-0.5*x(1,i))) then
+        if ((x(2,i)>=0.9d0+x(1,i))*(x(2,i)<=1.1d0-x(1,i))) then
            flag=0
         endif
        !  if (sqrt((0.5d0-x(1,i))**2+(0.75d0-x(2,i))**2)>=0.5d0) then

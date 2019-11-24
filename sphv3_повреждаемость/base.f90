@@ -67,9 +67,10 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="2400.txt")
+    open (unit=1, file="150.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
-    open (unit=3, file="arc.txt", action='write')
+    open (unit=3, file="s.txt", action='write')
+    open (unit=4, file="phi_1.txt", action='write')
     
     read (1, 1100) rho_0, T,nu, mu0,k0,gammar0,betar,eta,pi, dh,N  
     write (*, 1100) rho_0, T,nu, mu0,k0,gammar0,betar,eta,pi, dh,N
@@ -81,11 +82,11 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.00001d0
-    dt=1.0d-5
-    disp=0.04d0
+    h_non_local=0.2d0
+    dt=1.0d-6
+    disp=0.01d0
     damp_thick=1.0d0
-    fr=int(T/dt/500)
+    fr=int(T/dt/50)
     
     allocate(x(2,N))
     allocate(v(2,N))
@@ -197,7 +198,7 @@ integer, allocatable :: index_hole(:)
    flag1=0.0d0
    !конец блок инициализации начальных данных
    call plot_init(x,N,count_hole,count_section,index_section,index_hole)
-   call surf(s,N)
+ !  call surf(s,N)
 !начало блок интегрирования по времени
 do step=1,int(T/dt)
     
@@ -297,15 +298,19 @@ do step=1,int(T/dt)
    
     
 enddo
-    do i=1,30
-        write (3,1112) x_init(2,(i-1)*20+1),s((i-1)*20+1)
+    
+do i=1,N
+        write (3, 1111) x(1,i),x(2,i),s(i) !read coordinats
+enddo
+do i=1,N
+        write (4, 1111) x(1,i),x(2,i),phi(i)-1.0d0 !read coordinats
     enddo
 !конец блок интегрирования по времени 
-    call surf(s,N)
+  !  call surf(s,N)
     pause
     
     !гиф анимация процесса
-    call  plot(xplot,N,200)
+    call  plot(xplot,N,50)
     
     
     deallocate(x)

@@ -67,9 +67,10 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="600_2.txt")
+    open (unit=1, file="600.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
-    open (unit=3, file="arc.txt", action='write')
+     open (unit=3, file="s.txt", action='write')
+    open (unit=4, file="phi_1.txt", action='write')
     
     read (1, 1100) rho_0, T,nu, mu0,k0,gammar0,betar,eta,pi, dh,N  
     write (*, 1100) rho_0, T,nu, mu0,k0,gammar0,betar,eta,pi, dh,N
@@ -81,9 +82,9 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.1d0
+    h_non_local=0.2d0
     dt=1.0d-5
-    disp=0.6d0
+    disp=0.02d0
     damp_thick=0.01d0
     fr=int(T/dt/50)
 
@@ -124,19 +125,19 @@ integer, allocatable :: index_hole(:)
     count_section=0
      do i=1,N
         if(x(2,i)>=1.0d0) then
-            YieldStress0(i)=335.0d0
+            YieldStress0(i)=1835.0d0
         end if
         if (x(2,i)<=0.5d0) then
-            YieldStress0(i)=335.0d0
+            YieldStress0(i)=1835.0d0
         end if  
     enddo
     YieldStress=YieldStress0
     
     do i=1,N
-        if(x(2,i)>=1.5d0) then
+        if(((x(2,i)>=1.5d0)*(x(1,i)<=0.2))+((x(2,i)<=0.0d0)*(x(1,i)>=0.8))) then
             count_hole=count_hole+1
         end if
-        if (x(2,i)<=0.0d0) then
+        if (((x(2,i)<=0.0d0)*(x(1,i)<=0.2))+((x(2,i)>=1.5d0)*(x(1,i)>=0.8)))  then
             count_section=count_section+1
         end if  
     enddo
@@ -146,11 +147,11 @@ integer, allocatable :: index_hole(:)
     k1=1
     k2=1
     do i=1,N 
-     if(x(2,i)>=1.5d0) then  
+     if(((x(2,i)>=1.5d0)*(x(1,i)<=0.2))+((x(2,i)<=0.0d0)*(x(1,i)>=0.8))) then  
                 index_hole(k1)=i
                 k1=k1+1
         end if
-        if (x(2,i)<=0.0d0) then
+        if (((x(2,i)<=0.0d0)*(x(1,i)<=0.2))+((x(2,i)>=1.5d0)*(x(1,i)>=0.8))) then
                 index_section(k2)=i                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                 k2=k2+1
         end if
@@ -232,12 +233,12 @@ do step=1,int(T/dt)
     !flag=1
 
     do k2=1,count_hole
-        x(2,index_hole(k2))=x(2,index_hole(k2))+disp*(1.0d0-abs(cos(pi*time_calculated)))
+        x(2,index_hole(k2))=x_init(2,index_hole(k2))+disp*(1.0d0-abs(cos(pi*time_calculated)))
         x(1,index_hole(k2))=x_init(1,index_hole(k2))
     enddo  
         
     do k1=1,count_section
-        x(2,index_section(k1))=x(2,index_section(k1))-disp*(1.0d0-abs(cos(pi*time_calculated)))
+        x(2,index_section(k1))=x_init(2,index_section(k1))-disp*(1.0d0-abs(cos(pi*time_calculated)))
         x(1,index_section(k1))=x_init(1,index_section(k1))
     enddo
 
@@ -302,8 +303,11 @@ do step=1,int(T/dt)
     
 enddo
 
-    do i=1,N
-        write (3, 1111) x(1,i),x(2,i),phi(i)-1.0d0 !read coordinats
+do i=1,N
+        write (3, 1111) x(1,i),x(2,i),s(i) !read coordinats
+enddo
+do i=1,N
+        write (4, 1111) x(1,i),x(2,i),phi(i)-1.0d0 !read coordinats
     enddo
 !конец блок интегрирования по времени 
     !call surf(s,N)
