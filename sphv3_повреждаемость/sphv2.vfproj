@@ -47,11 +47,14 @@
 	<Files>
 		<Filter Name="Header Files" Filter="fi;fd;h;inc"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		<File RelativePath=".\10.txt"/>
 		<File RelativePath=".\1200.txt"/>
 		<File RelativePath=".\150.txt"/>
 		<File RelativePath=".\2400.txt"/>
+		<File RelativePath=".\30.txt"/>
 		<File RelativePath=".\4800.txt"/>
 		<File RelativePath=".\600.txt"/>
+		<File RelativePath=".\70.txt"/>
 		<File RelativePath=".\9600.txt"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath=".\base.f90"/>

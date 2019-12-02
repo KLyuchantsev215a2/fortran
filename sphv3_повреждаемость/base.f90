@@ -67,7 +67,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="150.txt")
+    open (unit=1, file="10.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="s.txt", action='write')
     open (unit=4, file="phi_1.txt", action='write')
@@ -82,8 +82,8 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.2d0
-    dt=1.0d-6
+    h_non_local=0.0000002d0
+    dt=1.0d-5
     disp=0.01d0
     damp_thick=1.0d0
     fr=int(T/dt/50)
@@ -134,10 +134,10 @@ integer, allocatable :: index_hole(:)
     YieldStress=YieldStress0
     
     do i=1,N
-        if(x(2,i)>=1.5d0) then
+        if(x(2,i)>=1.48d0) then
             count_hole=count_hole+1
         end if
-        if (x(2,i)<=0.0d0) then
+        if (x(2,i)<=0.02d0) then
             count_section=count_section+1
         end if  
     enddo
@@ -147,11 +147,11 @@ integer, allocatable :: index_hole(:)
     k1=1
     k2=1
     do i=1,N 
-     if(x(2,i)>=1.5d0) then  
+     if(x(2,i)>=1.48d0) then  
                 index_hole(k1)=i
                 k1=k1+1
         end if
-        if (x(2,i)<=0.0d0) then
+        if (x(2,i)<=0.02d0) then
                 index_section(k2)=i                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                 k2=k2+1
         end if

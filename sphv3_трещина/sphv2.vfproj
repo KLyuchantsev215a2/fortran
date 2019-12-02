@@ -55,7 +55,8 @@
 		<File RelativePath=".\4800.txt"/>
 		<File RelativePath=".\600.txt"/>
 		<File RelativePath=".\876.txt"/>
-		<File RelativePath=".\9600.txt"/></Filter>
+		<File RelativePath=".\9600.txt"/>
+		<File RelativePath=".\ang_10.txt"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath=".\base.f90"/>
 		<File RelativePath=".\Compute_Acceleration.f90"/>
