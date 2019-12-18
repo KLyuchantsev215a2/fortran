@@ -5,7 +5,7 @@ program base
 integer N,i,j,cap_down,cap_up,k1,k2,a,count_section,count_hole,flag,flag1!the number of particles that sample the environment
 integer step!counter for time steps
 real*8 :: dt,time_calculated!time step, time during calculation
-integer fr,coutfr! for frame
+integer fr,fr1,coutfr! for frame
     
 real*8 :: T,h_non_local!density, total calculation time ,the size of the side of the square, Courant number
     
@@ -67,7 +67,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="10.txt")
+    open (unit=1, file="600.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="s.txt", action='write')
     open (unit=4, file="phi_1.txt", action='write')
@@ -82,12 +82,12 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.0000002d0
+    h_non_local=0.1d0
     dt=1.0d-5
     disp=0.01d0
     damp_thick=1.0d0
     fr=int(T/dt/50)
-    
+    fr1=int(T/dt/10000)
     allocate(x(2,N))
     allocate(v(2,N))
     allocate(acc(2,N))
@@ -134,10 +134,10 @@ integer, allocatable :: index_hole(:)
     YieldStress=YieldStress0
     
     do i=1,N
-        if(x(2,i)>=1.48d0) then
+        if(x(2,i)>=1.5d0) then
             count_hole=count_hole+1
         end if
-        if (x(2,i)<=0.02d0) then
+        if (x(2,i)<=0.0d0) then
             count_section=count_section+1
         end if  
     enddo
@@ -147,11 +147,11 @@ integer, allocatable :: index_hole(:)
     k1=1
     k2=1
     do i=1,N 
-     if(x(2,i)>=1.48d0) then  
+     if(x(2,i)>=1.5d0) then  
                 index_hole(k1)=i
                 k1=k1+1
         end if
-        if (x(2,i)<=0.02d0) then
+        if (x(2,i)<=0.0d0) then
                 index_section(k2)=i                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
                 k2=k2+1
         end if
@@ -258,15 +258,19 @@ do step=1,int(T/dt)
   !  enddo
      
     
-    
+    !call Compute_W_Bazant(x,h_non_local,N,W,table_non_local)
     !вычисление ускорения
     call Compute_Acceleration(x,Ci,s,acc,PK1,F,Fedge,Cauchy,x_init,thichness,table,table_non_local,cor_W,W,nabla_W_0_1,nabla_W_0_2,mu0,k0,eta,mu,k,gammar,phi,etaN,vol,YieldStress,YieldStress0,betar,gammar0,rho_0,dt,N) 
     
   !  CN=CN_new
-    
+       ! if(step-int(step/fr1)*fr1==0) then
+       ! Force_old=0
+       ! call Compute_W_Bazant(x,h_non_local,N,W,table_non_local)
+        !end if
     !запоминание фрейма
      if(step-int(step/fr)*fr==0) then
        ! Force_old=0
+        call Compute_W_Bazant(x,h_non_local,N,W,table_non_local)
         Force=0
        !  call Compute_Potential(F,thichness,Ci,U,mu,k,N)
        ! do i=1,N

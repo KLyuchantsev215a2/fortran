@@ -39,7 +39,7 @@ subroutine Compute_W_Bazant(x,h,N,W,table)
               enddo     
               ci(i)=1.0d0/ci(i)
               table(i,1)=cout
-              !ci(i)=3.0d0/(3.140d0*h*h)
+              ci(i)=1.0d0/(3.0d0/(3.14159265358979323846264*d0*h*h))
         enddo
         
         
