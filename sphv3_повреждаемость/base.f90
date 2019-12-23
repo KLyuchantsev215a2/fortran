@@ -67,7 +67,7 @@ integer, allocatable :: index_hole(:)
 
 
         
-    open (unit=1, file="600.txt")
+    open (unit=1, file="9600.txt")
     open (unit=2, file="Force_SPH.txt", action='write')
     open (unit=3, file="s.txt", action='write')
     open (unit=4, file="phi_1.txt", action='write')
@@ -82,7 +82,7 @@ integer, allocatable :: index_hole(:)
     m=rho_0*Area/N  
     vol=m/rho_0
     h=1.0*sqrt(m/rho_0)
-    h_non_local=0.1d0
+    h_non_local=0.3d0
     dt=1.0d-5
     disp=0.01d0
     damp_thick=1.0d0
@@ -270,7 +270,7 @@ do step=1,int(T/dt)
     !запоминание фрейма
      if(step-int(step/fr)*fr==0) then
        ! Force_old=0
-        call Compute_W_Bazant(x,h_non_local,N,W,table_non_local)
+       ! call Compute_W_Bazant(x,h_non_local,N,W,table_non_local)
         Force=0
        !  call Compute_Potential(F,thichness,Ci,U,mu,k,N)
        ! do i=1,N

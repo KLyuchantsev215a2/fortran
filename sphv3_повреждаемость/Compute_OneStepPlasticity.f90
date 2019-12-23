@@ -66,7 +66,7 @@ real*8:: Kirchhoff(3,3)
 real*8:: Kirchhoff1(3,3)
 real*8:: h_non_local
 
-h_non_local=1.0d0*sqrt(1.5d0/real(N))
+!Ch_non_local=1.0d0*sqrt(1.5d0/real(N))
 
     BRR=70.0d0
     SRR=70.0d0
